@@ -23,7 +23,9 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/activity': 'http://10.55.16.27:8080'
+      '/api': 'http://47.100.0.227:8002',
+      '/images': 'http://47.100.0.227:8002',
+      '/activity': 'http://10.55.16.25:8080'
     }
   },
   resolve: {

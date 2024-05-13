@@ -41,6 +41,11 @@ const { runAsync: markShape, loading: marking } = useRequest(
   { manual: true }
 )
 
+const { runAsync: reset, loading: resetting } = useRequest(async () => {
+  await axios.get('/activity/reset')
+  await refresh()
+})
+
 const buildPath = (points: { x: number; y: number }[]): string => {
   const [firstPoint, ...restPoints] = points
   return (
@@ -68,11 +73,14 @@ const buildPath = (points: { x: number; y: number }[]): string => {
         v-for="shape in data.shapes"
         @click="markShape(shape.seq)"
         :key="shape.seq"
-        :class="{ 'cursor-pointer': !shape.marked }"
+        :class="['hover:fill-white', { 'cursor-pointer': !shape.marked }]"
         :d="buildPath(shape.points)"
         stroke="#ececec80"
         :fill="shape.marked ? shape.color : '#ececec60'"
       />
     </svg>
   </NSpin>
+  <div>
+    <NButton :loading="resetting" @click="reset">reset</NButton>
+  </div>
 </template>
