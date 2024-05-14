@@ -1,6 +1,6 @@
 export {
   default as XCanvas,
-  type XCanvasShape,
-  type XCanvasShapePoint,
+  type XCanvasGrid,
+  type XCanvasGridPoint,
   type XCanvasProps
 } from './x-canvas.vue'

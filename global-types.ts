@@ -1,7 +1,9 @@
 declare namespace API {
   type Resp<Data> = {
-    code: string
-    message: string
+    errCode: string
+    errMessage: string
     data: Data
   }
 }
+
+

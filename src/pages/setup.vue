@@ -1,5 +1,5 @@
 <template>
-  <div class="w-500px mx-auto pt-50px">
+  <div class="w-800px mx-auto pt-50px">
     <NForm class="w-full">
       <NGrid class="w-full" :cols="24" :x-gap="24">
         <n-form-item-gi :span="8" label="选择图片">
@@ -46,7 +46,6 @@
           <n-button @click="generate" :loading="generating">生成画布</n-button>
         </n-form-item-gi>
 
-
       </NGrid>
       
       
@@ -56,9 +55,9 @@
       <XCanvas
         :width="imageData.canvasWidth"
         :height="imageData.canvasHeight"
-        :shapes="imageData.grids"
+        :grids="imageData.grids"
         :bg-img-url="showBgImg? imageSrc : ''"
-        @shape-click="clickGrid"
+        @grid-click="clickGrid"
       ></XCanvas>
     </div>
   </div>
@@ -69,7 +68,7 @@ import axios from 'axios'
 import { useMessage, type SelectOption } from 'naive-ui'
 import { computed, ref } from 'vue'
 import { useRequest } from 'vue-request'
-import type { XCanvasShape } from '@/components'
+import type { XCanvasGrid } from '@/components'
 
 const message = useMessage()
 
@@ -98,7 +97,6 @@ export interface Grid {
   shape: string
   color?: string
   points: GridPoint[],
-  ext: Record<string, any>,
 }
 
 const clickGrid  = (e: Grid) => {
@@ -107,11 +105,11 @@ const clickGrid  = (e: Grid) => {
     imageData.value.grids = imageData.value.grids.map((grid) => {
       if(grid.seq === e.seq) {
         grid.selected = !grid.selected
-      }
-      if(grid.selected) {
-        grid.color = gridSelectedColor.value
-      } else {
-        grid.color = "#33333350"
+        if(grid.selected) {
+          grid.color = gridSelectedColor.value
+        } else {
+          grid.color = ""
+        }
       }
       return grid
     })
@@ -133,6 +131,10 @@ const shapes: SelectOption[] = [
   {
     label: '三角形',
     value: 'triangle'
+  },
+  {
+    label: '矩形',
+    value: 'rectangle'
   }
 ]
 
@@ -172,12 +174,11 @@ const { data: imageOptions } = useRequest(async () => {
 const imageData = ref<{
   canvasHeight: number
   canvasWidth: number
-  grids: XCanvasShape[]
-}>()
+  grids: XCanvasGrid[]
+} | null>(null)
 
 const {
   run: generate,
-  data: imageData1,
   loading: generating
 } = useRequest(
   async () => {
@@ -190,7 +191,7 @@ const {
       API.Resp<{
         canvasHeight: number
         canvasWidth: number
-        grids: XCanvasShape
+        grids: XCanvasGrid
       }>
     >('/api/image/convert_to_mosaic_grids', {
       imageId: imageId.value,
@@ -205,7 +206,7 @@ const {
       gridSelectedColor: '#ff00ff50',
     })
     imageData.value = data.data
-    return data.data
+  
   },
   {
     manual: true
