@@ -8,21 +8,20 @@ const message = useMessage()
 const { data, refreshAsync: refresh } = useRequest(async () => {
   const { data: respData } = await axios.get<{
     success: boolean
-    errCode: number
+    errCode: string
     errMessage: string
     data: {
       canvasColor: string
       canvasHeight: number
       canvasWidth: number
-      shapeType: string
-      shapes: {
+      grids: {
         seq: string
         color: string
         marked: boolean
         points: { x: number; y: number }[]
       }[]
     }
-  }>('/activity/detail?id=ACTIVITY_001')
+  }>('/api/activity/detail?id=ACTIVITY_001')
   if (!respData.success) {
     message.error(respData.errMessage)
     return null
@@ -30,9 +29,9 @@ const { data, refreshAsync: refresh } = useRequest(async () => {
   return respData.data
 })
 
-const { runAsync: markShape, loading: marking } = useRequest(
+const { runAsync: markGrid, loading: marking } = useRequest(
   async (seq: string) => {
-    await axios.post('/activity/signIn', {
+    await axios.post('/api/activity/signIn', {
       activityId: 'ACTIVITY_001',
       seq: seq
     })
@@ -42,7 +41,7 @@ const { runAsync: markShape, loading: marking } = useRequest(
 )
 
 const { runAsync: reset, loading: resetting } = useRequest(async () => {
-  await axios.get('/activity/reset')
+  await axios.get('/api/activity/reset')
   await refresh()
 })
 
@@ -70,13 +69,13 @@ const buildPath = (points: { x: number; y: number }[]): string => {
       :height="data.canvasHeight"
     >
       <path
-        v-for="shape in data.shapes"
-        @click="markShape(shape.seq)"
-        :key="shape.seq"
-        :class="['hover:fill-white', { 'cursor-pointer': !shape.marked }]"
-        :d="buildPath(shape.points)"
+        v-for="grid in data.grids"
+        @click="markGrid(grid.seq)"
+        :key="grid.seq"
+        :class="['hover:fill-white', { 'cursor-pointer': !grid.marked }]"
+        :d="buildPath(grid.points)"
         stroke="#ececec80"
-        :fill="shape.marked ? shape.color : '#ececec60'"
+        :fill="grid.marked ? grid.color : '#ececec60'"
       />
     </svg>
   </NSpin>

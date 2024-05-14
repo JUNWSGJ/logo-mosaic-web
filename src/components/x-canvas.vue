@@ -24,7 +24,8 @@ export interface XCanvasShape {
   seq: string
   shape: string
   color?: string
-  points: XCanvasShapePoint[]
+  points: XCanvasShapePoint[],
+  ext: Record<string, any>,
 }
 
 export interface XCanvasProps {
