@@ -33,22 +33,18 @@
               差值<n-slider v-model:value="color_distance_range" range  :step=5  class="w-50" show-tooltip />
             </div>
           </n-form-item-gi>
-        </NGrid>
-        <NGrid class="w-full" :cols="24" :x-gap="24">
-          
           <n-form-item-gi :span="8" >  
             格子填充颜色： <n-color-picker v-model:value="gridSelectedColor" class="w-30" size="small"  /> 
           </n-form-item-gi>
           <n-form-item-gi :span="8" >  
             是否显示背景图： <n-switch v-model:value="showBgImg" />
           </n-form-item-gi>
-          <n-form-item-gi :span="8" >  
+          <n-form-item-gi :span="4" >  
             <n-button @click="generate" :loading="generating">生成画布</n-button>
           </n-form-item-gi>
-          <n-form-item-gi :span="8" >  
+          <n-form-item-gi :span="4" >  
             <n-button @click="createActivity" :loading="creating" :disabled="!canCreate">创建活动</n-button>
           </n-form-item-gi>
-  
         </NGrid>
         
         
@@ -77,13 +73,13 @@
   
   const imageId = ref<string>()
   const shape = ref<string>('triangle')
-  const size = ref<[number, number]>([50, 40])
+  const size = ref<[number, number]>([20, 16])
   const pickStrategy = ref<string>('AvgColorCompare')
   // const pickOptions = ref<number[]>([0.1, 1.0])
   const remainingRatio = ref<number>(0.3)
   
   const targetColor = ref<string>('#ffffff')
-  const color_distance_range = ref<number[]>([30, 100])
+  const color_distance_range = ref<number[]>([50, 100])
   
   const gridSelectedColor = ref<string>('#A93AA9FF')
   const showBgImg = ref<boolean>(true)
