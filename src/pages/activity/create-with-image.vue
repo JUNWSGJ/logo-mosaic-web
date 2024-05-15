@@ -30,7 +30,7 @@
             </div>
             <div v-if="pickStrategy == 'AvgColorCompare'" class="flex inline items-center">
               <n-color-picker v-model:value="targetColor" class="w-30" size="small" :show-alpha="false" /> 
-              差值<n-slider v-model:value="color_distance_range" range  :step=5  class="w-50" show-tooltip />
+              差值<n-slider v-model:value="color_distance_range" range  :step=5  class="w-50"  />
             </div>
           </n-form-item-gi>
           <n-form-item-gi :span="8" >  
