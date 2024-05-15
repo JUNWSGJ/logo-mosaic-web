@@ -159,7 +159,7 @@
       }[]
     }
     const resp = await axios.get<API.Resp<ImageListData>>('/api/image/list')
-    return resp.data.data.logoImages.map(
+    const imageOptions =  resp.data.data.logoImages.map(
       (image): SelectOption => ({
         label: image.name,
         value: image.id,
@@ -167,6 +167,12 @@
         data: image
       })
     )
+    if(imageOptions.length > 0) {
+      imageId.value = imageOptions[0].value as string
+    }
+
+    return imageOptions;
+
   })
   
   
