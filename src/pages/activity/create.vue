@@ -20,8 +20,8 @@ export interface Grid {
 const shape = ref<string>('triangle')
 const size = ref<[number, number]>([50, 40])
 
-const cavasWidth = ref<number>(800);
-const cavasHeight = ref<number>(600);
+const canvasWidth = ref<number>(800);
+const canvasHeight = ref<number>(600);
 
 const canvasData = ref<{
   canvasWidth: number
@@ -46,8 +46,8 @@ const { runAsync: getCanvasData, loading: loading } = useRequest(
     >('/api/canvas/generate_canvas_grids', {
       gridShape: shape.value,
       gridSize: size.value,
-      canvasWidth: 800,
-      canvasHeight: 600,
+      canvasWidth: canvasWidth.value,
+      canvasHeight: canvasHeight.value,
       gridSelectedColor: '#ff00ff50',
     })
     canvasData.value = data.data
@@ -68,8 +68,28 @@ const canCreate = computed(() => {
 const { runAsync: createActivity, loading: creating } = useRequest(
   async () => {
     
+    if(canvasData.value == null) {
+      message.info("没有画布数据，无法创建活动");
+      return
+    }
+    const w = canvasWidth.value;
+    const h = canvasHeight.value;
+
     await axios.post('/api/activity/create', {
-      name: 'ACTIVITY_001',
+      name: '测试活动',
+      canvasWidth: w,
+      canvasHeight: h,
+      canvasColor: '#373737ff',
+      grids: canvasData.value.grids.filter(g => g.selected).map((grid) => ({
+        seq: grid.seq,
+        shape: grid.shape,
+        selected: grid.selected,
+        marked: false,
+        markedColor: grid.markedColor,
+        unmarkedColor: grid.unmarkedColor,
+        points: grid.points,
+      })),
+
     })
     reset()
   },
@@ -122,9 +142,9 @@ const selectGrid = (seq: string) => {
     <NForm class="w-full">
       <NGrid class="w-full" :cols="24" :x-gap="24">
         <n-form-item-gi :span="8" label="画布尺寸">
-          <n-input-number v-model:value="cavasWidth" :show-button="false" />
+          <n-input-number v-model:value="canvasWidth" :show-button="false" />
           <span class="text-center inline-block px-15px"> * </span>
-          <n-input-number v-model:value="cavasHeight" :show-button="false" />
+          <n-input-number v-model:value="canvasHeight" :show-button="false" />
         </n-form-item-gi>
 
         <n-form-item-gi :span="8" label="形状">
@@ -152,9 +172,9 @@ const selectGrid = (seq: string) => {
 
     <svg
       v-if="canvasData != null"
-      :viewBox="`0 0 ${canvasData.canvasWidth} ${canvasData.canvasHeight}`"
-      :width="canvasData.canvasWidth"
-      :height="canvasData.canvasHeight"
+      :viewBox="`0 0 ${canvasWidth} ${canvasHeight}`"
+      :width="canvasWidth"
+      :height="canvasHeight"
     >
       <path
         v-for="grid in canvasData.grids"

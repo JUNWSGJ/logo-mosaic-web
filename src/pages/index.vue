@@ -16,7 +16,8 @@ const { data, refreshAsync: refresh } = useRequest(async () => {
       canvasWidth: number
       grids: {
         seq: string
-        color: string
+        markedColor: string
+        unmarkedColor: string
         marked: boolean
         points: { x: number; y: number }[]
       }[]
@@ -41,7 +42,7 @@ const { runAsync: markGrid, loading: marking } = useRequest(
 )
 
 const { runAsync: reset, loading: resetting } = useRequest(async () => {
-  await axios.get('/api/activity/reset')
+  await axios.get('/api/activity/reset?id=ACTIVITY_001')
   await refresh()
 })
 
@@ -75,7 +76,7 @@ const buildPath = (points: { x: number; y: number }[]): string => {
         :class="['hover:fill-white', { 'cursor-pointer': !grid.marked }]"
         :d="buildPath(grid.points)"
         stroke="#ececec80"
-        :fill="grid.marked ? grid.color : '#ececec60'"
+        :fill="grid.marked ? grid.markedColor : grid.unmarkedColor"
       />
     </svg>
   </NSpin>
