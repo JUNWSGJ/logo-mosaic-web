@@ -23,11 +23,10 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      // '/api': 'http://47.100.0.227:8002',
-      // '/images': 'http://47.100.0.227:8002',
-      // '/activity': 'http://10.55.16.25:8080'
-      '/api': 'http://localhost:8002',
-      '/images': 'http://localhost:8002',
+      '/api': 'http://47.100.0.227:8002',
+      '/images': 'http://47.100.0.227:8002',
+      // '/api': 'http://localhost:8002',
+      // '/images': 'http://localhost:8002',
     }
   },
   resolve: {

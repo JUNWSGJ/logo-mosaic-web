@@ -139,7 +139,7 @@ const selectGrid = (seq: string) => {
     class="inline-block"
   > 
   <div class="w-1000px mx-auto pt-50px">
-    <NForm class="w-full">
+    <NForm class="w-full ml-3">
       <NGrid class="w-full" :cols="24" :x-gap="24">
         <n-form-item-gi :span="8" label="画布尺寸">
           <n-input-number v-model:value="canvasWidth" :show-button="false" />
@@ -155,13 +155,13 @@ const selectGrid = (seq: string) => {
           <span class="text-center inline-block px-15px"> * </span>
           <n-input-number v-model:value="size[1]" :show-button="false" />
         </n-form-item-gi>
-        <n-form-item-gi :span="8" >  
-          填充颜色： <n-color-picker v-model:value="gridFillColor" size="small"  /> 
+        <n-form-item-gi :span="12" >  
+          填充颜色： <n-color-picker v-model:value="gridFillColor" size="small" class="w-100"  /> 
         </n-form-item-gi>
-        <n-form-item-gi :span="8" >
+        <n-form-item-gi :span="6" >
           <n-button :loading="loading" @click="getCanvasData">生成画布</n-button>
         </n-form-item-gi>
-        <n-form-item-gi :span="8" >
+        <n-form-item-gi :span="6" >
           <n-button :loading="creating" @click="createActivity" :disabled="!canCreate">创建活动</n-button>
         </n-form-item-gi>
       </NGrid>
