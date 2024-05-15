@@ -21,7 +21,7 @@
           <div v-if="pickStrategy == 'EliminateBgColor'" class="flex inline items-center">
             留存像素点占整个格子的的比例 >=
             <n-input-number
-              class="w-50px"
+              class="w-50px"pnpm
               v-model:value="remainingRatio"
               :precision="2"
               :min="0.3"
@@ -44,6 +44,9 @@
         </n-form-item-gi>
         <n-form-item-gi :span="8" >  
           <n-button @click="generate" :loading="generating">生成画布</n-button>
+        </n-form-item-gi>
+        <n-form-item-gi :span="8" >  
+          <n-button @click="createActivity" :loading="creating" :disabled="!canCreate">创建活动</n-button>
         </n-form-item-gi>
 
       </NGrid>
@@ -75,14 +78,14 @@ const message = useMessage()
 const imageId = ref<string>()
 const shape = ref<string>('triangle')
 const size = ref<[number, number]>([50, 40])
-const pickStrategy = ref<string>('EliminateBgColor')
+const pickStrategy = ref<string>('AvgColorCompare')
 // const pickOptions = ref<number[]>([0.1, 1.0])
 const remainingRatio = ref<number>(0.3)
 
 const targetColor = ref<string>('#ffffff')
-const color_distance_range = ref<number[]>([1, 100])
+const color_distance_range = ref<number[]>([30, 100])
 
-const gridSelectedColor = ref<string>('#ff00ff50')
+const gridSelectedColor = ref<string>('#A93AA9FF')
 const showBgImg = ref<boolean>(true)
 
 
@@ -100,7 +103,7 @@ export interface Grid {
 }
 
 const clickGrid  = (e: Grid) => {
-  message.info(`${JSON.stringify(e)}`)
+  // message.info(`${JSON.stringify(e)}`)
   if(imageData.value) {
     imageData.value.grids = imageData.value.grids.map((grid) => {
       if(grid.seq === e.seq) {
@@ -203,7 +206,7 @@ const {
         targetColor: targetColor.value,
         colorDistanceRange: color_distance_range.value
       },
-      gridSelectedColor: '#ff00ff50',
+      gridSelectedColor: gridSelectedColor.value,
     })
     imageData.value = data.data
   
@@ -212,4 +215,49 @@ const {
     manual: true
   }
 )
+
+const { runAsync: createActivity, loading: creating } = useRequest(
+  async () => {
+    
+    if(imageData.value == null) {
+      message.info("没有画布数据，无法创建活动");
+      return
+    }
+    const w = imageData.value.canvasWidth;
+    const h = imageData.value.canvasHeight;
+
+    await axios.post('/api/activity/create', {
+      name: '测试活动',
+      canvasWidth: w,
+      canvasHeight: h,
+      canvasColor: '#373737ff',
+      grids: imageData.value.grids.filter(g => g.selected).map((grid) => ({
+        seq: grid.seq,
+        shape: grid.shape,
+        selected: grid.selected,
+        marked: false,
+        markedColor: grid.color,
+        unmarkedColor: '#ececec80',
+        points: grid.points,
+      })),
+
+    })
+    message.success("活动创建成功")
+    reset()
+  },
+  { manual: true }
+)
+
+const canCreate = computed(() => {
+  if (imageData.value == null) {
+    return false;
+  }
+  return imageData.value?.grids?.find((item) => item.selected)
+})
+
+
+const reset = ()=>{
+  imageData.value == null;
+}
+
 </script>
