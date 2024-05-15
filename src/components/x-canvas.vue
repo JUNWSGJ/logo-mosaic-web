@@ -25,7 +25,6 @@ export interface XCanvasGrid {
   shape: string
   color?: string
   points: XCanvasGridPoint[],
-  ext: Record<string, any>,
 }
 
 export interface XCanvasProps {

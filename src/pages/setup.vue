@@ -194,7 +194,7 @@ const {
       API.Resp<{
         canvasHeight: number
         canvasWidth: number
-        grids: XCanvasGrid
+        grids: XCanvasGrid[]
       }>
     >('/api/image/convert_to_mosaic_grids', {
       imageId: imageId.value,
